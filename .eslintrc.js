@@ -24,6 +24,14 @@ module.exports = {
     'no-trailing-spaces': 'warn',
     'array-bracket-spacing': 'warn',
     'no-unused-vars': 'warn',
-    'require-await': 'warn'
+    'require-await': 'warn',
+    'dot-notation': 'warn',
+    'object-curly-spacing': 'warn',
+    'comma-spacing': 'warn',
+    'comma-dangle': 'warn',
+    'no-multiple-empty-lines': 'warn',
+    'eqeqeq': 'warn',
+    'arrow-parens': 'warn',
+    'curly': 'warn'
   }
 }
