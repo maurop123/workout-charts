@@ -32,6 +32,9 @@ module.exports = {
     'no-multiple-empty-lines': 'warn',
     'eqeqeq': 'warn',
     'arrow-parens': 'warn',
-    'curly': 'warn'
+    'curly': 'warn',
+    'import/first': 'warn',
+    'semi': 'warn',
+    'quotes': 'warn',
   }
 }

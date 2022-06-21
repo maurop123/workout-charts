@@ -2,14 +2,15 @@
   <v-row justify="center" align="center">
     <v-col cols="12">
       <v-card class="logo py-4 d-flex justify-center">
+              <div id="cal-heatmap"></div>
+              </v-card>
+
+      <v-card class="logo py-4 d-flex justify-center">
         <Bar
           :chart-options="chartOptions"
           :chart-data="chartData"
           :chart-id="chartId"
           :dataset-id-key="datasetIdKey"
-          :plugins="plugins"
-          :css-classes="cssClasses"
-          :styles="styles"
           :width="width"
           :height="height"
         />
@@ -24,6 +25,9 @@ import { Bar } from 'vue-chartjs/legacy'
 import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js'
 
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
+
+import CalHeatMap from 'cal-heatmap'
+
 
 function addQty(qtyString) {
   return qtyString.split(',')
@@ -96,9 +100,6 @@ export default {
       datasetIdKey: 'label',
       width: 600,
       height: 400,
-      cssClasses: '',
-      styles: {},
-      plugins: {}
     }
   },
   computed: {
@@ -124,6 +125,20 @@ export default {
           ]
         }
     }
-  }
+  },
+  mounted() {
+    const cal = new CalHeatMap();
+    cal.init({
+      data: '/static/sample-datas-hours.json',
+      itemSelector: '#cal-heatmap',
+      start: new Date(2000, 0),
+      legend: [0,10,20,30,40],
+      legendColors: {
+        empty: "#ffffff",
+        min: "#dae289",
+        max: "#3b6427",
+      }
+    });
+  },
 }
 </script>
