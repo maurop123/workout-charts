@@ -13,7 +13,7 @@ export default {
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    titleTemplate: '%s - nuxt-app-2',
+    titleTemplate: '%s - Workout Charts',
     title: 'nuxt-app-2',
     meta: [
       { charset: 'utf-8' },

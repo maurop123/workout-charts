@@ -2,9 +2,15 @@
   <v-row justify="center" align="center">
     <v-col cols="12">
       <v-card class="logo py-4 d-flex justify-center">
-              <div id="cal-heatmap"></div>
-              </v-card>
-
+        <div id="cal-heatmap"></div>
+      </v-card>
+      <v-card>
+        <!-- start date selector -->
+        <v-input type="text"
+          v-model="calMapStartDate"
+          placeholder="20220630" />
+        <!-- data set -->
+      </v-card>
       <v-card class="logo py-4 d-flex justify-center">
         <Bar
           :chart-options="chartOptions"
@@ -27,6 +33,27 @@ import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, Li
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
 
 import CalHeatMap from 'cal-heatmap'
+import 'cal-heatmap/cal-heatmap.css'
+
+import _omit from 'lodash/omit'
+
+function calHeatMapInit(context) {
+  const cal = new CalHeatMap();
+  console.log('context.hours', context.hours)
+  cal.init({
+    data: context.hours,
+    itemSelector: '#cal-heatmap',
+    start: new Date(2022, 1, 0),
+    domain: "month",
+    displayLegend: true,
+    legend: [0,1,2,3,4,5],
+    legendColors: {
+      empty: "#ffffff",
+      min: "#dae289",
+      max: "#3b6427",
+    }
+  })
+}
 
 
 function addQty(qtyString) {
@@ -66,7 +93,12 @@ export default {
   name: 'BarChart',
   components: { Bar },
   async asyncData({ $content }) {
+
     const data = await $content('workouts').fetch()
+
+    const hoursFetch = await $content('hours').fetch()
+
+    const hours = _omit(hoursFetch, ['slug','dir','path','extension','createdAt','updatedAt'])
 
     const dates = data.body.filter(row => row.date).map(row => row.date)
 
@@ -88,11 +120,15 @@ export default {
       absData: getMuscleGroupChartData('abs', rows, dates),
       chestData: getMuscleGroupChartData('chest', rows, dates),
       legsData: getMuscleGroupChartData('legs', rows, dates),
+      hours,
     }
     return result
   },
   data() {
     return {
+      // calMap vars
+      calMapStartDate: "",
+      // cal-heatmap chart options
       chartOptions: {
         responsive: true
       },
@@ -127,18 +163,7 @@ export default {
     }
   },
   mounted() {
-    const cal = new CalHeatMap();
-    cal.init({
-      data: '/static/sample-datas-hours.json',
-      itemSelector: '#cal-heatmap',
-      start: new Date(2000, 0),
-      legend: [0,10,20,30,40],
-      legendColors: {
-        empty: "#ffffff",
-        min: "#dae289",
-        max: "#3b6427",
-      }
-    });
+    calHeatMapInit(this)
   },
 }
 </script>

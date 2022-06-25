@@ -36,5 +36,7 @@ module.exports = {
     'import/first': 'warn',
     'semi': 'warn',
     'quotes': 'warn',
+    'vue/max-attributes-per-line': 'warn',
+    'quote-props': 'warn',
   }
 }
