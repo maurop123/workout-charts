@@ -1,4 +1,8 @@
-# nuxt-app-2
+# Workout Charts
+
+A Nuxt app using Chart.js to visualize workout data
+
+![Screen Shot 2022-06-09 at 3.47.06 PM.png](https://raw.githubusercontent.com/maurop123/workout-charts/master/static/Screen%20Shot%202022-06-09%20at%203.47.06%20PM.png)
 
 ## Build Setup
 
