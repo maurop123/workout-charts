@@ -2,10 +2,8 @@
   <v-row justify="center" align="center">
     <v-col cols="12">
       <v-card class="logo py-4 d-flex justify-center">
+        <h4>Smoking</h4>
         <div id="cal-heatmap-smoking"></div>
-      </v-card>
-      <v-card class="logo py-4 d-flex justify-center">
-        <div id="cal-heatmap"></div>
       </v-card>
       <v-card>
         <!-- imagine if we could select the start date and some
@@ -112,9 +110,9 @@ export default {
         }
     }
   },
-  
+
   mounted() {
-    calHeatMapInit(this) //got error when passed just hours
+    // calHeatMapInit(this) //got error when passed just hours
     calHeatMapInitSmoking(this)
   },
 }

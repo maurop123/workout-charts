@@ -48,7 +48,7 @@ import 'cal-heatmap/cal-heatmap.css'
     console.log('smokingCalhetmapData', smokingCalheatmapData)
     cal.init({
       data: smokingCalheatmapData,
-      itemSelector: '#cal-heatmap',
+      itemSelector: '#cal-heatmap-smoking',
       start: new Date(2022, 6, 0),
       domain: "month",
       displayLegend: true,
@@ -57,7 +57,8 @@ import 'cal-heatmap/cal-heatmap.css'
         empty: "#ffffff",
         min: "#dae289",
         max: "#3b6427",
-      }
+      },
+      range: 3
     })
   }
   
