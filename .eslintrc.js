@@ -38,5 +38,6 @@ module.exports = {
     'quotes': 'warn',
     'vue/max-attributes-per-line': 'warn',
     'quote-props': 'warn',
+    'space-in-parens': 'warn'
   }
 }

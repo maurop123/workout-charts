@@ -4,13 +4,13 @@ Using CalHeatMap and Chart.js
 
 ## NEXT STEPS
 
-Get real data in cal-heatmap
+Design
 
 ## LOG
 
-7/4
+7/8/22
 
-Organize logic a bit.
+Add real data to cal-heatmap chart
 
 6/24/22
 

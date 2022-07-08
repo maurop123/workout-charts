@@ -1,5 +1,24 @@
+//use ts
+
 import CalHeatMap from 'cal-heatmap'
 import 'cal-heatmap/cal-heatmap.css'
+
+  function convertToCalheatmapData(rows) {
+    return rows.reduce((acc,row) => {
+      //expect date in '6/19' format
+      const date = row.date.concat('/22')
+      // turn date to unix seconds
+      const unixDate = Math.floor(new Date(date).getTime() / 1000)
+      // add unixDate key if doesn't exist. else inc by 1
+      if (acc[unixDate]) {
+        acc[unixDate] += 1
+      } else {
+        acc[unixDate] = 1
+      }
+
+      return acc
+    }, {})
+  }
   
   export function calHeatMapInit(context) {
     const cal = new CalHeatMap();
@@ -18,24 +37,63 @@ import 'cal-heatmap/cal-heatmap.css'
       }
     })
   }
+
+  // smoke and mini dose data
+  export function calHeatMapInitSmoking(context) {
+    const cal = new CalHeatMap();
+    console.log('context.meds', context.meds)
+    const smoking = context.meds.filter(row => row.what.includes('smoke'))
+    console.log('smoking', smoking)
+    const smokingCalheatmapData = convertToCalheatmapData(smoking)
+    console.log('smokingCalhetmapData', smokingCalheatmapData)
+    cal.init({
+      data: smokingCalheatmapData,
+      itemSelector: '#cal-heatmap',
+      start: new Date(2022, 6, 0),
+      domain: "month",
+      displayLegend: true,
+      legend: [0,1,2,3,4],
+      legendColors: {
+        empty: "#ffffff",
+        min: "#dae289",
+        max: "#3b6427",
+      }
+    })
+  }
   
+  export function medsDataTransform(data) {
+    const rows = consolidateRowsAndFillInDates(data)
+
+    return rows
+  }
 
   /* Workout Data Transform Methods */
 
-  export function workoutDataTransforms(data) {
-    const dates = data.body.filter(row => row.date).map(row => row.date)
-
-    // consolidate rows and fill in dates
-    const rows = data.body.reduce(({acc,date}, row) => {
+  function consolidateRowsAndFillInDates(data) {
+      // consolidate rows and fill in dates
+      return data.body.reduce( ({acc, date}, row) => {
+        // save date for filling in following rows
         if (row.date) {
           date = row.date
         } else {
           row.date = date
+        }
+
+        // check if rest of row has data
+        const nonEmptyValues = Object.values(row).filter(v => v)
+        if (nonEmptyValues.length > 0) {
           acc.push(row)
         }
+
         return {acc, date}
       }, {acc: [], date: null})
       .acc // take only the accumulated rows
+  }
+
+  export function workoutDataTransforms(data) {
+    const dates = data.body.filter(row => row.date).map(row => row.date)
+
+    const rows = consolidateRowsAndFillInDates(data)
 
     return { dates, rows }
   }

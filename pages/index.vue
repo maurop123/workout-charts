@@ -2,9 +2,14 @@
   <v-row justify="center" align="center">
     <v-col cols="12">
       <v-card class="logo py-4 d-flex justify-center">
+        <div id="cal-heatmap-smoking"></div>
+      </v-card>
+      <v-card class="logo py-4 d-flex justify-center">
         <div id="cal-heatmap"></div>
       </v-card>
       <v-card>
+        <!-- imagine if we could select the start date and some
+             other info and dynamically update cal-heatmaps -->
         <!-- start date selector -->
         <v-input type="text"
           v-model="calMapStartDate"
@@ -35,7 +40,7 @@ ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
 
 import _omit from 'lodash/omit'
 
-import { calHeatMapInit, getMuscleGroupChartData, workoutDataTransforms } from '~/logic/chart_logic'
+import { calHeatMapInit, calHeatMapInitSmoking, getMuscleGroupChartData, medsDataTransform, workoutDataTransforms } from '~/logic/chart_logic'
 
 
 export default {
@@ -47,9 +52,13 @@ export default {
 
     const { dates, rows } = workoutDataTransforms(data)
 
+    // hours.json
     const hoursFetch = await $content('hours').fetch()
-
     const hours = _omit(hoursFetch, ['slug','dir','path','extension','createdAt','updatedAt'])
+
+    // meds.csv
+    const medsFetch = await $content('meds').fetch()
+    const meds = medsDataTransform(medsFetch)
 
 
     const result = {
@@ -59,9 +68,11 @@ export default {
       chestData: getMuscleGroupChartData('chest', rows, dates),
       legsData: getMuscleGroupChartData('legs', rows, dates),
       hours,
+      meds,
     }
     return result
   },
+
   data() {
     return {
       // calMap vars
@@ -76,6 +87,7 @@ export default {
       height: 400,
     }
   },
+
   computed: {
     chartData() {
       return {
@@ -100,8 +112,10 @@ export default {
         }
     }
   },
+  
   mounted() {
     calHeatMapInit(this) //got error when passed just hours
+    calHeatMapInitSmoking(this)
   },
 }
 </script>
