@@ -10,7 +10,7 @@ module.exports = {
   },
   extends: [
     '@nuxtjs',
-    'plugin:nuxt/recommended'
+    // 'plugin:nuxt/recommended'
   ],
   plugins: [
   ],
@@ -38,6 +38,8 @@ module.exports = {
     'quotes': 'warn',
     'vue/max-attributes-per-line': 'warn',
     'quote-props': 'warn',
-    'space-in-parens': 'warn'
+    'space-in-parens': 'warn',
+    'no-tabs': 'warn',
+    'no-mixed-spaces-and-tabs': 'warn'
   }
 }

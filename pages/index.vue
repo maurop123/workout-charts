@@ -1,62 +1,34 @@
 <template>
   <v-row justify="center" align="center">
     <v-col cols="12">
-      <v-card class="logo py-4 d-flex justify-center">
-        <h4>Smoking</h4>
-        <div id="cal-heatmap-smoking"></div>
-      </v-card>
-      <v-card>
-        <!-- imagine if we could select the start date and some
-             other info and dynamically update cal-heatmaps -->
-        <!-- start date selector -->
-        <v-input type="text"
-          v-model="calMapStartDate"
-          placeholder="20220630" />
-        <!-- data set -->
-      </v-card>
-      <v-card class="logo py-4 d-flex justify-center">
-        <Bar
-          :chart-options="chartOptions"
-          :chart-data="chartData"
-          :chart-id="chartId"
-          :dataset-id-key="datasetIdKey"
-          :width="width"
-          :height="height"
-        />
-      </v-card>
+      <CalHeatmap name="smoking" :dataRows="meds" />
+      <BarChart :chartData="chartData" />
     </v-col>
   </v-row>
 </template>
 
 <script>
-
-import { Bar } from 'vue-chartjs/legacy'
-import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js'
-
-ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
-
-
 import _omit from 'lodash/omit'
 
-import { calHeatMapInit, calHeatMapInitSmoking, getMuscleGroupChartData, medsDataTransform, workoutDataTransforms } from '~/logic/chart_logic'
+import { getMuscleGroupChartData, workoutDataTransforms } from '~/logic/chart_logic'
+
+import CalHeatmap from '@/components/CalHeatmap.vue'
+import BarChart from '@/components/BarChart.vue'
 
 
 export default {
-  name: 'BarChart',
-  components: { Bar },
+  name: 'HomePage',
+  components: { BarChart, CalHeatmap },
   async asyncData({ $content }) {
+    const medsFetch = await $content('meds').fetch()
+    const meds = medsFetch.body
 
     const data = await $content('workouts').fetch()
-
-    const { dates, rows } = workoutDataTransforms(data)
+    const { dates, rows } = workoutDataTransforms(data.body)
 
     // hours.json
     const hoursFetch = await $content('hours').fetch()
     const hours = _omit(hoursFetch, ['slug','dir','path','extension','createdAt','updatedAt'])
-
-    // meds.csv
-    const medsFetch = await $content('meds').fetch()
-    const meds = medsDataTransform(medsFetch)
 
 
     const result = {
@@ -69,21 +41,6 @@ export default {
       meds,
     }
     return result
-  },
-
-  data() {
-    return {
-      // calMap vars
-      calMapStartDate: "",
-      // cal-heatmap chart options
-      chartOptions: {
-        responsive: true
-      },
-      chartId: 'bar-chart',
-      datasetIdKey: 'label',
-      width: 600,
-      height: 400,
-    }
   },
 
   computed: {
@@ -109,11 +66,6 @@ export default {
           ]
         }
     }
-  },
-
-  mounted() {
-    // calHeatMapInit(this) //got error when passed just hours
-    calHeatMapInitSmoking(this)
   },
 }
 </script>
