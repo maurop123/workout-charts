@@ -1,40 +1,18 @@
 //use ts
 
+//functional library
+
 import CalHeatMap from 'cal-heatmap'
 import 'cal-heatmap/cal-heatmap.css'
 
-function convertToCalheatmapData(rows) {
-  return rows.reduce((acc,row) => {
-    //expect date in '6/19' format
-    const date = row.date.concat('/22')
-    // turn date to unix seconds
-    const unixDate = Math.floor(new Date(date).getTime() / 1000)
-    // add unixDate key if doesn't exist. else inc by 1
-    if (acc[unixDate]) {
-      acc[unixDate] += 1
-    } else {
-      acc[unixDate] = 1
-    }
-    return acc
-  }, {})
-}
-
-function dataRules (name) {
-  return {
-    smoking: 'smoke',
-  }[name]
-}
-
 // smoke and mini dose data
 export function calHeatMapInit(name, _data) {
-  // name,dataName
+  // new heatmap instance
   const cal = new CalHeatMap();
-  console.log(name, '_data', _data)
-  const data = consolidateRowsAndFillInDates(_data)
-    .filter(row => row.what.includes( dataRules(name) ))
-  console.log(name, 'data', data)
-  const calheatmapData = convertToCalheatmapData(data)
-  console.log('calheatmapData', calheatmapData)
+
+  // data transforms
+  const calheatmapData = heatmapDataTransforms(name, _data)
+
   cal.init({
     data: calheatmapData,
     itemSelector: `#cal-heatmap-${name}`,
@@ -54,6 +32,24 @@ export function calHeatMapInit(name, _data) {
       position: "right",
     },
   })
+
+  return cal
+}
+
+export function updateCalHeatmap(cal, name, data) {
+  heatmapDataTransforms(name, data)
+  cal.update()
+}
+
+function heatmapDataTransforms (name, _data) {
+    // data transforms
+    console.log(name, '_data', _data)
+    const data = consolidateRowsAndFillInDates(_data)
+      .filter(row => row.what.includes( dataRules(name) ))
+    console.log(name, 'data', data)
+    const calheatmapData = convertToCalheatmapData(data)
+    console.log('calheatmapData', calheatmapData)
+    return calheatmapData
 }
 
 /* Workout Data Transform Methods */
@@ -86,6 +82,29 @@ export function workoutDataTransforms(data) {
   const rows = consolidateRowsAndFillInDates(data)
 
   return { dates, rows }
+}
+
+function convertToCalheatmapData(rows) {
+  return rows.reduce((acc,row) => {
+    //expect date in '6/19' format
+    const date = row.date.concat('/22')
+    // turn date to unix seconds
+    const unixDate = Math.floor(new Date(date).getTime() / 1000)
+    // add unixDate key if doesn't exist. else inc by 1
+    if (acc[unixDate]) {
+      acc[unixDate] += 1
+    } else {
+      acc[unixDate] = 1
+    }
+    return acc
+  }, {})
+}
+
+function dataRules (name) {
+  return {
+    smoking: 'smoke',
+    minidose: 'mini dose',
+  }[name]
 }
 
 function addQty(qtyString) {
